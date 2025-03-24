@@ -89,7 +89,7 @@ app.post('/webhook', async (req, res) => {
                 await replyMessage(userId,
                     "このサービスは月額制です🌙 ご利用には登録が必要です。\n" +
                     "↓こちらから登録をお願いします。\n" +
-                    "https://manabu-yts.stores.jp"
+                    "https://manabuyts.stores.jp"
                 );
                 continue;
             }
