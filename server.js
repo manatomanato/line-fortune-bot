@@ -3,9 +3,11 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const admin = require('firebase-admin');
-const serviceAccount = require('./firebase-service-account.json');
 
-// Firebase 初期化
+const serviceAccount = JSON.parse(
+  Buffer.from(process.env.FIREBASE_CONFIG_BASE64, 'base64').toString('utf-8')
+);
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
@@ -20,7 +22,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 // 🔁 Firestore から有料ユーザーかどうか確認する関数
 async function isPaidUser(userId) {
     try {
-        const doc = await db.collection('paidUsers').doc(userId).get(); // ✅ 修正済み
+        const doc = await db.collection('paidUsers').doc(userId).get();
         return doc.exists && doc.data().isPaid === true;
     } catch (error) {
         console.error("Firestore読み込みエラー:", error);
@@ -28,7 +30,7 @@ async function isPaidUser(userId) {
     }
 }
 
-// 🔮 ChatGPT APIを使って占いのメッセージを取得
+// 💕 AI彼女としてChatGPTに返答を作らせる関数
 async function getChatGPTResponse(userMessage) {
     try {
         const response = await axios.post('https://api.openai.com/v1/chat/completions', {
@@ -36,7 +38,7 @@ async function getChatGPTResponse(userMessage) {
             messages: [
                 {
                     role: "system",
-                    content: "あなたは彼女です。ため口で話してください。"               
+                    content: "あなたは彼女です。ため口で話してください。"
                 },
                 { role: "user", content: userMessage }
             ]
@@ -50,7 +52,7 @@ async function getChatGPTResponse(userMessage) {
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error("ChatGPT APIエラー:", error.response?.data || error.message);
-        return "占いの結果を取得できませんでした…もう一度試してください。";
+        return "今ちょっとお返事できなかったみたい…もう一回話しかけて？🥺";
     }
 }
 
@@ -71,7 +73,7 @@ async function replyMessage(userId, text) {
     }
 }
 
-// 🌐 LINEのWebhookを受け取るエンドポイント
+// 🌐 LINEのWebhookを受け取る
 app.post('/webhook', async (req, res) => {
     const events = req.body.events;
 
@@ -82,7 +84,6 @@ app.post('/webhook', async (req, res) => {
 
             console.log(`ユーザー(${userId})のメッセージ: ${userMessage}`);
 
-            // 🔐 有料ユーザーかチェック
             const paid = await isPaidUser(userId);
             if (!paid) {
                 await replyMessage(userId,
@@ -93,10 +94,7 @@ app.post('/webhook', async (req, res) => {
                 continue;
             }
 
-            // 🔮 ChatGPTで占いメッセージを作成
             const replyText = await getChatGPTResponse(userMessage);
-
-            // 💌 LINEに返信
             await replyMessage(userId, replyText);
         }
     }
@@ -104,11 +102,11 @@ app.post('/webhook', async (req, res) => {
     res.sendStatus(200);
 });
 
-// 🩺 ヘルスチェックエンドポイント
+// 🩺 ヘルスチェック
 app.get("/", (req, res) => {
-    res.send("LINE Fortune Bot is running!");
+    res.send("LINE AI Girlfriend Bot is running!");
 });
 
-// 🚀 サーバー起動（Render対応）
+// 🚀 Render用ポート
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
