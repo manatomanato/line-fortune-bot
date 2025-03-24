@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const admin = require('firebase-admin');
-const serviceAccount = require('./firebase-service-account.json'); // Firebaseサービスアカウントキー
+const serviceAccount = require('./firebase-service-account.json');
 
 // Firebase 初期化
 admin.initializeApp({
@@ -36,7 +36,7 @@ async function getChatGPTResponse(userMessage) {
             messages: [
                 {
                     role: "system",
-                    content: "あなたは優しい占い師です。相談者の悩みに占いの視点から前向きなアドバイスをしてください。"
+                    content: "あなたは彼女です。ため口で話してください。"               
                 },
                 { role: "user", content: userMessage }
             ]
@@ -85,7 +85,7 @@ app.post('/webhook', async (req, res) => {
             // 🔐 有料ユーザーかチェック
             const paid = await isPaidUser(userId);
             if (!paid) {
-                await replyMessage(userId, 
+                await replyMessage(userId,
                     "このサービスは月額制です🌙 ご利用には登録が必要です。\n" +
                     "↓こちらから登録をお願いします。\n" +
                     "https://manabu-yts.stores.jp"
@@ -104,5 +104,11 @@ app.post('/webhook', async (req, res) => {
     res.sendStatus(200);
 });
 
-// 🚀 サーバー起動
-app.listen(3000, () => console.log('Server is running on port 3000'));
+// 🩺 ヘルスチェックエンドポイント
+app.get("/", (req, res) => {
+    res.send("LINE Fortune Bot is running!");
+});
+
+// 🚀 サーバー起動（Render対応）
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
