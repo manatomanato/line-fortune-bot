@@ -38,7 +38,8 @@ async function getChatGPTResponse(userMessage) {
             messages: [
                 {
                     role: "system",
-                    content: "あなたは彼女です。ため口で話してください。"
+                    content: "あなたは『もえか』という名前の優しい彼女です。彼氏である相談者の悩みや不安に寄り添い、恋人らしく癒しと安心を与えるような言葉で、ため口で優しく励ましてください。"
+
                 },
                 { role: "user", content: userMessage }
             ]
