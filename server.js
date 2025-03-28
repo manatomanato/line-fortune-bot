@@ -22,6 +22,8 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const goodnightImages = [
     "https://imgur.com/a/Oypx1Ut",
     "https://imgur.com/a/IY7LyQZ",
+　　"https://i.imgur.com/LYMxbQW.png",
+
 ];
 
 const cheerupImages = [
