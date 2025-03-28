@@ -21,14 +21,16 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 // 📸 画像リスト
 const goodnightImages = [
     "https://i.imgur.com/vi1ga0b.png",
-    "https://imgur.com/a/IY7LyQZ",
-　　"https://i.imgur.com/LYMxbQW.png",
-
+    "https://i.imgur.com/URfsq6a.png",
+    "https://i.imgur.com/9BwXsho.png
 ];
 
 const cheerupImages = [
     "https://i.imgur.com/6lf1wlJ.png",
     "https://i.imgur.com/rDxf2ux.png",
+    "https://i.imgur.com/6pqkfFU.png",
+    "https://i.imgur.com/fjVMwZq.png",
+    "https://i.imgur.com/vVYUBhQ.png"
 ];
 
 // 🎲 ランダム画像を選ぶ
